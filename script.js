@@ -8,6 +8,12 @@ const EMPTY = '';
 const SIZE = 4;
 const BLOCK_SIZE = 2;
 const MAX_HINTS = 999;
+const ASSET_URLS = [
+    'assets/HOLA_logo_1x1.jpg',
+    'assets/whisky.png',
+    'assets/cigars.png',
+    'assets/HOLA_bg.png'
+];
 
 /**
  * 数独核心算法模块
@@ -553,7 +559,26 @@ document.querySelectorAll('.input-btn').forEach(btn => {
     });
 });
 
-// 初始化
-window.addEventListener('DOMContentLoaded', () => {
+function preloadAllAssets(maxWait = 8000) {
+    const tasks = ASSET_URLS.map(src => new Promise((resolve) => {
+        const img = new Image();
+        img.src = src;
+        const done = () => resolve({ src, ok: true });
+        const fail = () => resolve({ src, ok: false });
+        if (typeof img.decode === 'function') {
+            img.decode().then(done).catch(fail);
+        } else {
+            img.onload = done;
+            img.onerror = fail;
+        }
+    }));
+    return Promise.race([
+        Promise.all(tasks),
+        new Promise(resolve => setTimeout(resolve, maxWait))
+    ]);
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+    await preloadAllAssets();
     GameManager.init();
 });
