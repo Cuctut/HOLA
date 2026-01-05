@@ -358,18 +358,32 @@ const UIManager = {
                 const logoEl = document.createElement('div');
                 logoEl.className = 'block-logo';
                 const logoImg = document.createElement('img');
+                let logoSrc = 'assets/HOLA_logo_1x1.jpg';
                 if (blockIndex === 1) {
-                    logoImg.src = 'assets/whisky.png';
+                    logoSrc = 'assets/whisky.png';
                 } else if (blockIndex === 2) {
-                    logoImg.src = 'assets/cigars.png';
-                } else {
-                    logoImg.src = 'assets/HOLA_logo_1x1.jpg';
+                    logoSrc = 'assets/cigars.png';
                 }
                 logoImg.alt = 'HOLA';
-                logoEl.appendChild(logoImg);
-                logoEl.style.animation = 'logoPop 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both, logoExit 900ms cubic-bezier(0.4, 0, 0.2, 1) forwards';
-                logoEl.style.animationDelay = `0ms, ${800 + blockIndex * 180}ms`;
                 blockEl.appendChild(logoEl);
+                let attached = false;
+                const startLogo = (useFallback = false) => {
+                    if (attached) return;
+                    attached = true;
+                    logoImg.src = useFallback ? 'assets/HOLA_logo_1x1.jpg' : logoSrc;
+                    logoEl.appendChild(logoImg);
+                    logoEl.style.animation = 'logoPop 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both, logoExit 900ms cubic-bezier(0.4, 0, 0.2, 1) forwards';
+                    logoEl.style.animationDelay = `0ms, ${800 + blockIndex * 180}ms`;
+                };
+                const preload = new Image();
+                preload.src = logoSrc;
+                if (typeof preload.decode === 'function') {
+                    preload.decode().then(() => startLogo(false)).catch(() => startLogo(true));
+                } else {
+                    preload.onload = () => startLogo(false);
+                    preload.onerror = () => startLogo(true);
+                }
+                setTimeout(() => startLogo(false), 2000);
                 
                 // 每个Block里有4个Cell
                 for (let r = 0; r < 2; r++) {
