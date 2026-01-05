@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>HOLA Sudoku</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>HOLA 数独</h1>
+        <div class="status-bar">
+            <span id="timer">00:00</span>
+            <span id="best-score">最佳: --:--</span>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <div id="grid" class="sudoku-grid">
+            <!-- 网格由JS生成 -->
+        </div>
+    </main>
+
+    <div class="controls">
+        <button id="btn-new-game" class="control-btn">新游戏</button>
+        <button id="btn-tutorial" class="control-btn">教程</button>
+        <button id="btn-hint" class="control-btn">提示 (<span id="hint-count">3</span>)</button>
+    </div>
+
+    <!-- 输入面板 -->
+    <div class="input-panel">
+        <button class="input-btn btn-H" data-val="H">H</button>
+        <button class="input-btn btn-O" data-val="O">O</button>
+        <button class="input-btn btn-L" data-val="L">L</button>
+        <button class="input-btn btn-A" data-val="A">A</button>
+        <button class="input-btn btn-clear" data-val="">X</button>
+    </div>
+
+    <!-- 胜利弹窗 -->
+    <div id="win-modal" class="modal">
+        <div class="modal-content">
+            <h2>🎉 恭喜完成! 🎉</h2>
+            <p>用时: <span id="final-time">00:00</span></p>
+            <button id="btn-restart" class="control-btn">再来一局</button>
+        </div>
+    </div>
+
+    <!-- 教程弹窗 -->
+    <div id="tutorial-modal" class="modal">
+        <div class="modal-content tutorial-content">
+            <h2>📖 游戏教程 📖</h2>
+            <div class="tutorial-steps">
+                <p>1. <strong>目标</strong>：填满 4x4 的网格。</p>
+                <p>2. <strong>规则</strong>：每行、每列、每个田块都要包含 <strong>H, O, L, A</strong> 四个字母，不重复。</p>
+                <p>3. <strong>操作</strong>：点击选中格子，再点击下方字母填入。</p>
+            </div>
+            <button id="btn-close-tutorial" class="control-btn">知道了</button>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
