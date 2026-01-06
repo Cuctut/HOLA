@@ -8,12 +8,25 @@ const EMPTY = '';
 const SIZE = 4;
 const BLOCK_SIZE = 2;
 const MAX_HINTS = 999;
-const ASSET_URLS = [
-    'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/HOLA_logo_1x1.jpg',
-    'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/whisky.png',
-    'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/cigars.png',
-    'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/bg2.png'
-];
+const ASSETS = {
+    logo: {
+        remote: 'https://test.fukit.cn/autoupload/f/w9jD7vi8L0IT1nO_pyrNGdiO_OyvX7mIgxFBfDMDErs/20260106/TUu5/2480X2480/assets/HOLA_logo_1x1.jpg/webp',
+        local: 'assets/HOLA_logo_1x1.jpg'
+    },
+    whisky: {
+        remote: 'https://test.fukit.cn/autoupload/f/w9jD7vi8L0IT1nO_pyrNGdiO_OyvX7mIgxFBfDMDErs/20260106/UEgL/1024X1024/assets/whisky.png/webp',
+        local: 'assets/whisky.png'
+    },
+    cigars: {
+        remote: 'https://test.fukit.cn/autoupload/f/w9jD7vi8L0IT1nO_pyrNGdiO_OyvX7mIgxFBfDMDErs/20260106/cDBA/1024X1024/assets/cigars.png/webp',
+        local: 'assets/cigars.png'
+    },
+    bg: {
+        remote: 'https://test.fukit.cn/autoupload/f/w9jD7vi8L0IT1nO_pyrNGdiO_OyvX7mIgxFBfDMDErs/20260106/r8D0/864X1536/assets/bg2.png/webp',
+        local: 'assets/bg2.png'
+    }
+};
+const ASSET_URLS = Object.values(ASSETS).map(a => a.remote);
 
 /**
  * 数独核心算法模块
@@ -369,24 +382,18 @@ const UIManager = {
                 const logoEl = document.createElement('div');
                 logoEl.className = 'block-logo';
                 const logoImg = document.createElement('img');
-                let logoSrc = 'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/HOLA_logo_1x1.jpg';
-                if (blockIndex === 1) {
-                    logoSrc = 'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/whisky.png';
-                } else if (blockIndex === 2) {
-                    logoSrc = 'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/cigars.png';
-                }
+                const assetKey = blockIndex === 1 ? 'whisky' : blockIndex === 2 ? 'cigars' : 'logo';
+                const asset = ASSETS[assetKey];
+                
+                const logoSrc = asset.remote;
                 logoImg.alt = 'HOLA';
                 blockEl.appendChild(logoEl);
                 let attached = false;
                 const startLogo = (useFallback = false) => {
                     if (attached) return;
                     attached = true;
-                    const fallbackSrc = blockIndex === 1
-                        ? 'assets/whisky.png'
-                        : blockIndex === 2
-                            ? 'assets/cigars.png'
-                            : 'assets/HOLA_logo_1x1.jpg';
-                    logoImg.src = useFallback ? fallbackSrc : logoSrc;
+                    
+                    logoImg.src = useFallback ? asset.local : logoSrc;
                     logoEl.appendChild(logoImg);
                     logoEl.style.animation = 'logoPop 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both, logoExit 900ms cubic-bezier(0.4, 0, 0.2, 1) forwards';
                     logoEl.style.animationDelay = `0ms, ${800 + blockIndex * 180}ms`;

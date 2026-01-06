@@ -16,7 +16,8 @@
     --space-block-gap: clamp(6px, 2.2vw, 12px);
     --space-block-padding: clamp(4px, 1.6vw, 10px);
     --space-cell-margin: clamp(2px, 1vw, 4px);
-    --bg-image: url("https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/bg2.png");
+    /* --bg-image: url("https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/bg2.png"); */
+    --bg-image: url("https://test.fukit.cn/autoupload/f/w9jD7vi8L0IT1nO_pyrNGdiO_OyvX7mIgxFBfDMDErs/20260106/r8D0/864X1536/assets/bg2.png/webp");
     --bg-overlay: rgba(31,31,31,0.35);
 }
 
