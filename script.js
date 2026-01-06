@@ -9,10 +9,10 @@ const SIZE = 4;
 const BLOCK_SIZE = 2;
 const MAX_HINTS = 999;
 const ASSET_URLS = [
-    'assets/HOLA_logo_1x1.jpg',
-    'assets/whisky.png',
-    'assets/cigars.png',
-    'assets/HOLA_bg.png'
+    'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/HOLA_logo_1x1.jpg',
+    'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/whisky.png',
+    'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/cigars.png',
+    'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/bg2.png'
 ];
 
 /**
@@ -364,11 +364,11 @@ const UIManager = {
                 const logoEl = document.createElement('div');
                 logoEl.className = 'block-logo';
                 const logoImg = document.createElement('img');
-                let logoSrc = 'assets/HOLA_logo_1x1.jpg';
+                let logoSrc = 'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/HOLA_logo_1x1.jpg';
                 if (blockIndex === 1) {
-                    logoSrc = 'assets/whisky.png';
+                    logoSrc = 'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/whisky.png';
                 } else if (blockIndex === 2) {
-                    logoSrc = 'assets/cigars.png';
+                    logoSrc = 'https://cdn.jsdelivr.net/gh/cuctut/HOLA@main/assets/cigars.png';
                 }
                 logoImg.alt = 'HOLA';
                 blockEl.appendChild(logoEl);
@@ -376,7 +376,12 @@ const UIManager = {
                 const startLogo = (useFallback = false) => {
                     if (attached) return;
                     attached = true;
-                    logoImg.src = useFallback ? 'assets/HOLA_logo_1x1.jpg' : logoSrc;
+                    const fallbackSrc = blockIndex === 1
+                        ? 'assets/whisky.png'
+                        : blockIndex === 2
+                            ? 'assets/cigars.png'
+                            : 'assets/HOLA_logo_1x1.jpg';
+                    logoImg.src = useFallback ? fallbackSrc : logoSrc;
                     logoEl.appendChild(logoImg);
                     logoEl.style.animation = 'logoPop 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both, logoExit 900ms cubic-bezier(0.4, 0, 0.2, 1) forwards';
                     logoEl.style.animationDelay = `0ms, ${800 + blockIndex * 180}ms`;
@@ -580,5 +585,14 @@ function preloadAllAssets(maxWait = 8000) {
 
 window.addEventListener('DOMContentLoaded', async () => {
     await preloadAllAssets();
-    GameManager.init();
+    const loader = document.getElementById('global-loading');
+    if (loader) {
+        loader.classList.add('hidden');
+        setTimeout(() => {
+            loader.remove();
+            GameManager.init();
+        }, 300);
+    } else {
+        GameManager.init();
+    }
 });
