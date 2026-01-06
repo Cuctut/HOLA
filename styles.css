@@ -135,6 +135,8 @@ h1 {
     border: none;
     border-radius: 0;
     box-shadow: none;
+    min-width: calc(4 * var(--cell-size) + 4 * var(--space-cell-margin) + 2 * var(--space-block-padding) + var(--space-block-gap));
+    min-height: calc(4 * var(--cell-size) + 4 * var(--space-cell-margin) + 2 * var(--space-block-padding) + var(--space-block-gap));
 }
 
 .block {
@@ -215,13 +217,13 @@ h1 {
 
 .cell.pop-in {
     transform-origin: 50% 50%;
-    animation: popIn 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: popIn 280ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 @keyframes popIn {
     0% { transform: scale(0); opacity: 0; }
     60% { transform: scale(1.05); opacity: 1; }
-    100% { transform: scale(1); }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .cell:active {

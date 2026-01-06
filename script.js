@@ -171,6 +171,7 @@ const GameManager = {
     userGrid: [],
     timerInterval: null,
     seconds: 0,
+    timerStarted: false,
     selectedCell: null, // {row, col}
     hintsLeft: MAX_HINTS,
     
@@ -212,7 +213,9 @@ const GameManager = {
         
         this.selectedCell = null;
         this.stopTimer();
-        this.startTimer();
+        this.seconds = 0;
+        this.timerStarted = false;
+        UIManager.updateTimer(0);
         
         UIManager.renderGrid(this.puzzle, this.userGrid);
         UIManager.updateHintDisplay(this.hintsLeft);
@@ -228,10 +231,12 @@ const GameManager = {
             this.seconds++;
             UIManager.updateTimer(this.seconds);
         }, 1000);
+        this.timerStarted = true;
     },
 
     stopTimer() {
         clearInterval(this.timerInterval);
+        this.timerStarted = false;
     },
 
     handleInput(val) {
@@ -409,7 +414,7 @@ const UIManager = {
                         cellEl.dataset.row = globalRow;
                         cellEl.dataset.col = globalCol;
                         cellEl.textContent = cellVal;
-                        cellEl.style.visibility = 'hidden';
+                        cellEl.style.opacity = '0';
                         cellEl.addEventListener('click', (e) => {
                             this.selectCell(globalRow, globalCol);
                         });
@@ -422,9 +427,13 @@ const UIManager = {
                     blockEl.querySelectorAll('.cell').forEach(cell => {
                         const r = parseInt(cell.dataset.row, 10);
                         const c = parseInt(cell.dataset.col, 10);
-                        cell.style.visibility = 'visible';
                         cell.classList.add('pop-in');
                         cell.style.animationDelay = `${(r * SIZE + c) * 40}ms`;
+                        cell.addEventListener('animationend', () => {
+                            cell.classList.remove('pop-in');
+                            cell.style.opacity = '1'; 
+                            cell.style.animationDelay = '';
+                        }, { once: true });
                     });
                     logoEl.remove();
                 });
@@ -438,7 +447,7 @@ const UIManager = {
         if (cell) {
             cell.textContent = val;
             cell.classList.remove('error');
-            cell.className = cell.className.replace(/color-[HOLA]/, '');
+            cell.className = cell.className.replace(/color-[HOLA]/g, '').trim();
             if (val) cell.classList.add(`color-${val}`);
             
             // 重新高亮相同数字
@@ -448,6 +457,7 @@ const UIManager = {
     
     selectCell(row, col) {
         GameManager.selectedCell = { row, col };
+        if (!GameManager.timerStarted) GameManager.startTimer();
         
         // 清除之前的选择
         document.querySelectorAll('.cell.selected').forEach(el => el.classList.remove('selected'));
@@ -585,14 +595,12 @@ function preloadAllAssets(maxWait = 8000) {
 
 window.addEventListener('DOMContentLoaded', async () => {
     await preloadAllAssets();
+    GameManager.init();
     const loader = document.getElementById('global-loading');
     if (loader) {
         loader.classList.add('hidden');
         setTimeout(() => {
             loader.remove();
-            GameManager.init();
         }, 300);
-    } else {
-        GameManager.init();
     }
 });
